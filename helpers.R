@@ -215,6 +215,14 @@ ensemble_predictions <- function(results) {
   #   }
   # })
   # 
+
+  ## note on 20241204: I actually need the supporting rate as well
+  supporting_rate <- sapply(1:nrow(all_classifications), function(i) {
+    # Number of methods supporting the majority vote
+    num_methods_support <- sum(all_classifications[i, ] == majority_vote[i])
+    return(num_methods_support/ncol(all_classifications))
+  })
+  
   ## add one more based on confidence score
   # Determine the final classification considering UNCLASS
   confident_classification <- sapply(1:nrow(all_classifications), function(i) {
@@ -231,6 +239,7 @@ ensemble_predictions <- function(results) {
   # Create a data frame with the results, ## change on 20241015
   results_df <- list(
     majority_vote = majority_vote,
+    supporting_rate = supporting_rate,
     all_probs = all_probs,
     majortity_Probs =  majortity_Probs,
     majority_median_prob = majority_median_probs,
@@ -325,9 +334,10 @@ predict_from_model <- function(methods, new_data, seed = 123, n_runs = 10) {
   # Feature importance based on mutual information
   feature_mutual_info <- mutual_info_importance(new_data, final_ensemble$confident_classification)
   
-  ## changed on 20241121-22
+  ## changed on 20241121-22, 20241204
   ensemble_outs = data.frame(
     majority_vote = final_ensemble$majority_vote,
+    supporting_rate = final_ensemble$supporting_rate,
     majority_median_prob = final_ensemble$majority_median_prob,
     #classification_medianProb0.5_supportRate0.5 = final_ensemble$final_classification,
     #classification_supportRate0.5 = final_ensemble$classification_filterVotes,
