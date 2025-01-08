@@ -38,7 +38,6 @@ dataProcessingServer <- function(id, uploaded_data, process_button, random_seed,
 
     })
 
-
   })
   # Return the reactive value to be accessed
   return(processed_result)
